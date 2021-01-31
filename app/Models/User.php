@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Models\Favorite;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
@@ -20,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile',
     ];
 
     /**
@@ -43,5 +45,49 @@ class User extends Authenticatable
 
     public function tweet(){
         return $this->hasMany('App\Models\tweet');
+    }
+
+    public function favorite(){
+        return $this->hasMany('App\Models\Favorite');
+    }
+
+
+    // フォロワー→フォロー
+    public function followers()
+    {
+        return $this->belongsToMany(self::class, 'followers', 'followed_id', 'following_id');
+    }
+
+    // フォロー→フォロワー
+    public function follows()
+    {
+        return $this->belongsToMany(self::class, 'followers', 'following_id', 'followed_id');
+    }
+
+    public function follow($user_id) 
+    {
+        return $this->follows()->attach($user_id);
+    }
+
+    // フォロー解除する
+    public function unfollow($user_id)
+    {
+        return $this->follows()->detach($user_id);
+    }
+
+    // フォローしているか
+    public function isFollowing($user_id) 
+    {
+        return (boolean) $this->follows()->where('followed_id', $user_id)->first(['id']);
+    }
+
+    // フォローされているか
+    public function isFollowed($user_id) 
+    {
+        return (boolean) $this->followers()->where('following_id', $user_id)->first(['id']);
+    }
+
+    public function isFavorite($tweet_id){
+        return (boolean) Favorite::where('user_id', $this->id)->where('tweet_id', $tweet_id)->first(['id']);
     }
 }

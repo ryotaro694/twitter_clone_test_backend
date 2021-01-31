@@ -1,32 +1,17 @@
 @extends('layouts.compose')
 
 @section('content')
-    @if ($errors->any())
-	    <div class="alert alert-danger">
-	        <ul>
-	            @foreach ($errors->all() as $error)
-	                <li>{{ $error }}</li>
-	            @endforeach
-	        </ul>
-	    </div>
-	@endif
-    <div class="container">
-        <form action="/" method="post" enctype="multipart/form-data">
-            <div class="row justify-content-center">
-                @csrf
-                <textarea type="form-control" name="tweet"></textarea>
-                <input type="hidden" name="user_id" value="{{ $user_id }}">
-            </div>
-            <div class="row mt-2 justify-content-center">
-                <input type="file" name="image_file" accept="image/png, image/jpeg">
-            </div>
-            <div class="row justify-content-center mt-3">
-                <input type="submit" value="Tweet" class="btn btn-outline-primary">
-            </div>
-        </form>
-    </div>
 
-    <div class="container">
+<div class="profile mb-5">
+    <div class="row ml-3">
+        <p class="mb-0"><div class="arial_black"><b>{{ $userID->name }}</div></p>
+    </div>
+    <div class="row ml-3">
+        <p class="mb-0"><div class="arial_black_1"><b>{{ $userID->profile }}</div></p>
+    </div>
+</div>
+
+<div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 @foreach($items as $item)
